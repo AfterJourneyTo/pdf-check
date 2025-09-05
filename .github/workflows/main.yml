@@ -1,0 +1,28 @@
+name: build-exe
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+jobs:
+  win-build-cli:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Build CLI exe
+        run: pyinstaller -F -n KeepFirstPages app_cli.py
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KeepFirstPages
+          path: dist/KeepFirstPages.exe
